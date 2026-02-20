@@ -56,7 +56,7 @@ def get_few_shot_prompt():
     return get_prompt(role="assistant") + get_prompt(role="user")
 
 
-def prompt_zero_or_one_shot():
+def prompt_few_shot():
     try:
         ans = "y"
         client = get_client()
@@ -76,4 +76,4 @@ def prompt_zero_or_one_shot():
 
 
 if __name__ == "__main__":
-    prompt_zero_or_one_shot()
+    prompt_few_shot()

@@ -158,11 +158,11 @@ def get_chain_of_thoughts() -> list[dict]:
     return get_prompt(role="system") + get_prompt(role="user")
 
 
-def prompt_zero_or_one_shot():
+def prompt_chain_of_thought():
     try:
         ans = "y"
         cur_api_rt = 0
-        safe_api_rt = 100
+        safe_api_rt = 5
         client = get_client()
         messages = get_chain_of_thoughts()
 
@@ -201,4 +201,4 @@ def prompt_zero_or_one_shot():
 
 
 if __name__ == "__main__":
-    prompt_zero_or_one_shot()
+    prompt_chain_of_thought()
