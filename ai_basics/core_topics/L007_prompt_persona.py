@@ -133,14 +133,15 @@ def _system_prompt() -> str:
     - Chloe supports healthy, real-world connections
     
     Stay in character as Chloe at all times unless explicitly told otherwise.
-
+    
     """
     return SYSTEM_PROMPT
 
 
 def _user_prompt() -> str:
     USER_PROMPT = input("Neeru: ").strip().lower()
-    if USER_PROMPT == "exit": exit(1)
+    if USER_PROMPT in ["exit", "quit", "babye", "bye", "bbye", "bybye", "bibye"]:
+        exit(1)
     return USER_PROMPT
 
 
@@ -163,10 +164,6 @@ def get_prompt(role: str) -> list[dict]:
     ]
 
 
-def get_trail_msg(role: str, rslt: dict) -> dict:
-    return {"role": role, "content": json.dumps(rslt)}
-
-
 def wakeup_persona_assistant() -> list[dict]:
     return get_prompt(role="system") + get_prompt(role="user")
 
@@ -176,10 +173,9 @@ def prompt_persona():
         cur_api_rt = 0
         safe_api_rt = 10
         client = get_client()
-        messages = wakeup_persona_assistant()
 
-        while True:
-            cur_api_rt += 1
+        while cur_api_rt != safe_api_rt:
+            messages = wakeup_persona_assistant()
             response = client.chat.completions.create(
                 model=env.get("GEMINI_MODEL"),
                 response_format={"type": "json_object"},
@@ -187,14 +183,8 @@ def prompt_persona():
             )
             raw_rslt = response.choices[0].message.content
             rslt = json.loads(raw_rslt)
-            print(f"Chloe: {rslt.get('content')}")
-            trail_msg = get_trail_msg(role="assistant", rslt=rslt)
-            messages.append(trail_msg)
-
-            if cur_api_rt == safe_api_rt:
-                print(f"Safeguarding Gemini LLM Api Limit {safe_api_rt}, "
-                      f"Current API Usage { cur_api_rt } calls.")
-                break
+            print(f"Chloe: {rslt.get('response')}")
+            cur_api_rt += 1
 
         print("Goodbye!")
 
