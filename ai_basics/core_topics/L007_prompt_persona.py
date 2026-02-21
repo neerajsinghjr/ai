@@ -74,7 +74,6 @@ When to use
 """
 import os
 import json
-from multiprocessing.resource_sharer import stop
 
 from openai import OpenAI
 from dotenv import load_dotenv, find_dotenv
