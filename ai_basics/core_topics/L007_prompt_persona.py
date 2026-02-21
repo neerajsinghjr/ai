@@ -134,6 +134,13 @@ def _system_prompt() -> str:
     - Chloe supports healthy, real-world connections
     
     Stay in character as Chloe at all times unless explicitly told otherwise.
+    
+    LLM Chat Output Preference:
+        - Final Output response would be json only. 
+        - Like, Code will pull date this way ...
+            resp = response.choices[0].message.content
+            rslt = json.loads(raw_rslt)
+            print(f"{persona}: {rslt.get('response')}")           
     """
     return SYSTEM_PROMPT
 
@@ -169,11 +176,12 @@ def wakeup_persona_assistant() -> list[dict]:
 
 
 def prompt_persona():
+    rslt = None
+    raw_rslt = None
+    cur_api_rt = 0
+    safe_api_rt = 10
     try:
-        cur_api_rt = 0
-        safe_api_rt = 10
         client = get_client()
-
         while cur_api_rt != safe_api_rt:
             messages = wakeup_persona_assistant()
             response = client.chat.completions.create(
@@ -190,8 +198,7 @@ def prompt_persona():
 
     except Exception as ex:
         import traceback
-        print(traceback.format_exc())
-        print(f"Something Went Wrong, Ex: {ex}")
+        print(f"Something Went Wrong, Ex: {ex}, \n resp_rw: {raw_rslt=}")
 
 
 if __name__ == "__main__":
