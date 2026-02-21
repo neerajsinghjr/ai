@@ -81,7 +81,7 @@ from dotenv import load_dotenv, find_dotenv
 
 env = os.environ
 load_dotenv(find_dotenv())
-
+persona = env.get("PERSONA_ID", "Chloe")
 
 def get_client() -> OpenAI:
     return OpenAI(
@@ -183,7 +183,7 @@ def prompt_persona():
             )
             raw_rslt = response.choices[0].message.content
             rslt = json.loads(raw_rslt)
-            print(f"Chloe: {rslt.get('response')}")
+            print(f"{persona}: {rslt.get('response')}")
             cur_api_rt += 1
 
         print("Goodbye!")
